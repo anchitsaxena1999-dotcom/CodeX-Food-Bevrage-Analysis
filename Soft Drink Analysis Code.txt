@@ -1,0 +1,137 @@
+--1. Demographic Insights (examples)
+	--a. Who prefers energy drink more? (male/female/non-binary?)
+	select gender, count(gender) from survey_record
+	group by gender;
+
+	--b. Which age group prefers energy drinks more?
+	select age,count(age) as total_count from survey_record
+	group by age
+	order by total_count DESC;
+
+	--c. Which type of marketing reaches the most Youth (15-30)?	
+	select 
+		sr.age, sd.marketing_channels, count(marketing_channels) as total_count 
+	from survey_record sr
+		join survey_data sd
+		on sr.respondent_id = sd.respondent_id
+	where sr.age ='15-18'
+	group by sr.age, sd.marketing_channels
+	order by total_count DESC;
+
+--2. Consumer Preferences:
+	--a. What are the preferred ingredients of energy drinks among respondents?
+		select ingredients_expected, count(ingredients_expected) as total_count
+		from survey_data 
+		group by ingredients_expected
+		order by total_count DESC;
+	
+	--b. What packaging preferences do respondents have for energy drinks?
+		select packaging_preference, count(packaging_preference) as total_count
+		from survey_data
+		group by packaging_preference
+		order by total_count DESC;
+
+--3. Competition Analysis:
+	--a. Who are the current market leaders?
+		 Select current_brands , count(current_brands) as total_count 
+		 from survey_data
+		 group by current_brands
+		 order by total_count DESC;
+		
+	--b. What are the primary reasons consumers prefer those brands over ours?
+		 select reasons_for_choosing_brands , count(reasons_for_choosing_brands) As total_count
+		 from survey_data
+		 group by reasons_for_choosing_brands
+		 order by total_count DESC;
+
+--4. Marketing Channels and Brand Awareness:
+	--a. Which marketing channel can be used to reach more customers?
+		 select marketing_channels, count(marketing_channels) as total_count
+		 from survey_data
+		 group by marketing_channels
+		 order by total_count DESC;
+	
+	--b. How effective are different marketing strategies and channels in reaching our customers?
+		 select marketing_channels , count(respondent_id) as customer_reach
+		 from survey_data
+		 group by marketing_channels
+		 order by customer_reach DESC;
+
+--5. Brand Penetration:
+	--a. What do people think about our brand? (overall rating)
+		 select brand_perception, count(brand_perception) as rating_count
+		 from survey_data
+		 group by brand_perception
+		 order by rating_count DESC;
+		 
+	--b. Which cities do we need to focus more on?
+		 select c.city, c.tier, count(city) as count
+		 from survey_record sr
+		 join city c
+		 on sr.city_id = c.city_id
+		 group by c.city,c.tier
+		 order by count DESC;
+
+--6. Purchase Behavior:
+	--a. Where do respondents prefer to purchase energy drinks?
+		 select purchase_location, count(purchase_location) as total_count
+		 from survey_data
+		 group by purchase_location
+		 order by total_count DESC;
+		 
+	--b. What are the typical consumption situations for energy drinks among respondents?
+		 Select typical_consumption_situations, count(typical_consumption_situations) as total_count
+		 from survey_data
+		 group by typical_consumption_situations
+		 order by total_count DESC;
+		 
+	--c. What factors influence respondents' purchase decisions, such as price range and limited edition packaging?
+		 select price_range, count(price_range) as total_count
+		 from survey_data
+		 group by price_range
+		 order by total_count DESC;
+
+		 select limited_edition_packaging, count(limited_edition_packaging) as total_count
+		 from survey_data
+		 group by limited_edition_packaging
+		 order by total_count DESC;
+
+--Secondary Insights
+
+--Other Insights
+--) How many heard our brand?
+	select heard_before, count(heard_before) as total_count
+	from survey_data
+	group by heard_before
+	order by total_count DESC;
+
+--2) How many tries our brand?
+	 select tried_before , count(tried_before) as total_count
+	 from survey_data
+	 group by tried_before
+	 order by total_count DESC;
+
+--3) Overall Taste experiance of our brand?
+	ALTER TABLE survey_data
+	ALTER COLUMN taste_experience TYPE integer USING (taste_experience::integer);
+	
+	select round (avg(taste_experience),2) as Rating
+	from survey_data;
+
+--4) what are the reason that customer preventing our product?
+	 select reasons_preventing_trying, count(reasons_preventing_trying) as total_count
+	 from survey_data
+	 group by reasons_preventing_trying
+	 order by total_count DESC;
+
+--5) what improvement suggest by customer for increasing the sell?
+	 select improvements_desired , count(improvements_desired) as total_count
+	 from survey_data
+	 group by improvements_desired
+	 order by total_count DESC;
+
+--6) What packaging should be make to attarct the customer?
+	 select packaging_preference , count(packaging_preference) as Total_count
+	 from survey_data
+	 group by packaging_preference
+	 order by total_count DESC;
